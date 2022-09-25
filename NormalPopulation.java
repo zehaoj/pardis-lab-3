@@ -3,11 +3,11 @@ public class NormalPopulation implements Population {
     public NormalPopulation(int seed, int min, int max, double mean, double var) {
     }
 
-    int getCount() {
+    public int getCount() {
         return 0;
     }
 
-    int getSample() {
+    public int getSample() {
         return 0;
     }
 }
