@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicMarkableReference;
 import java.util.Random;
 
@@ -198,4 +199,14 @@ public final class LockFreeSkipList<T> {
 	// Different objects may have the same hash.
 	// return (curr.key == key) && x.equals(curr.value);
     }
+
+	public LinkedList<Integer> toList() {
+		LinkedList<Integer> list = new LinkedList<Integer>();
+		Node currNode = head.next[0].getReference();
+		while(currNode != null && currNode.key != Integer.MAX_VALUE) {
+			list.add(currNode.key);
+			currNode = (Node) currNode.next[0].getReference();
+		}
+		return list;
+	}
 }

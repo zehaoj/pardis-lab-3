@@ -1,13 +1,23 @@
+import java.util.Random;
+
 public class UniformPopulation implements Population {
+    private static Random r;
+    private int cnt;
+
+    private int max_;
 
     public UniformPopulation(int seed, int min, int max) {
+        r = new Random();
+        max_ = max;
+        cnt = 0;
     }
 
     public int getCount() {
-        return 0;
+        return cnt;
     }
 
     public int getSample() {
-        return 0;
+        cnt += 1;
+        return r.nextInt(max_);
     }
 }
