@@ -1,5 +1,3 @@
-import com.sun.source.tree.Tree;
-
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -11,12 +9,12 @@ public class Task3_3 {
     public static double fracAdd;
     public static double fracRemove;
 
-    public static final int[] threadNumList = {2, 4, 6, 8};
+    public static final int[] threadNumList = {4, 8, 16, 32, 64};
     public static final int INT_MIN = 0;
     public static final int INT_MAX = (int) 1e7;
     public static final int INT_MEAN = (int) 5e6;
     public static final int INT_VAR = (int) 5e6 / 3;
-    public static final int OPS_NUM = (int) 5e6;
+    public static final int OPS_NUM = (int) 1e6;
 
     public static int threadNum;
     public static ExecutorService exec;
@@ -178,8 +176,18 @@ public class Task3_3 {
         LockedLFSkipList uniSkipList = new LockedLFSkipList(false);
         Task1.populateLockedList(uniSkipList, "uniform");
 
-        //Test 3.2
-
+        // Test the running time of the locked skiplist
+        for (int n = 0; n < threadNumList.length; n++) {
+            threadNum = threadNumList[n];
+            System.out.println("thread: " + threadNum);
+            for (int i = 0; i < fracAddRange.length; i++) {
+                fracAdd = fracAddRange[i];
+                fracRemove = fracRemoveRange[i];
+                System.out.println("add frac: " + fracAdd);
+                System.out.println("remove frac: " + fracRemove);
+                runOps(uniSkipList, "uniform", 4);
+            }
+        }
 
         // Test if the skiplist meets sequential specification
         LinkedList<Integer> uniLinkedList = uniSkipList.toList();
@@ -192,6 +200,36 @@ public class Task3_3 {
         TreeMap<Long, Log> completeLog = runOpsWithLogs(uniSkipList, "uniform", 1);
         checkLogs(uniLinkedList, completeLog);
 
+        // Task 3.4
+
+        for (int runtimes = 0; runtimes < 10; runtimes++) {
+            uniSkipList = new LockedLFSkipList(false);
+            Task1.populateLockedList(uniSkipList, "uniform");
+
+            // Test the running time of the locked skiplist
+            for (int n = 0; n < threadNumList.length; n++) {
+                threadNum = threadNumList[n];
+                System.out.println("thread: " + threadNum);
+                for (int i = 0; i < fracAddRange.length; i++) {
+                    fracAdd = fracAddRange[i];
+                    fracRemove = fracRemoveRange[i];
+                    System.out.println("add frac: " + fracAdd);
+                    System.out.println("remove frac: " + fracRemove);
+                    runOps(uniSkipList, "uniform", 4);
+                }
+            }
+
+            // Test if the skiplist meets sequential specification
+            uniLinkedList = uniSkipList.toList();
+            threadNum = 8;
+            System.out.println("thread: " + threadNum);
+            fracAdd = 0.5;
+            fracRemove = 0.5;
+            System.out.println("add frac: " + fracAdd);
+            System.out.println("remove frac: " + fracRemove);
+            completeLog = runOpsWithLogs(uniSkipList, "uniform", 1);
+            checkLogs(uniLinkedList, completeLog);
+        }
     }
 
     public static class Consumer implements Runnable {

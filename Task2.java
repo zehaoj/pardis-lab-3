@@ -82,7 +82,8 @@ public class Task2 {
 
     public static void main(String [] args) {
         LockFreeSkipList uniSkipList = new LockFreeSkipList();
-        Task1.populate(uniSkipList, "uniform");
+        // Type "normal" or "uniform" to switch mode
+        Task1.populate(uniSkipList, "normal");
         for (int n = 0; n < threadNumList.length; n++) {
             threadNum = threadNumList[n];
             System.out.println("thread: " + threadNum);
@@ -91,7 +92,8 @@ public class Task2 {
                 fracRemove = fracRemoveRange[i];
                 System.out.println("add frac: " + fracAdd);
                 System.out.println("remove frac: " + fracRemove);
-                runOps(uniSkipList, "uniform");
+                // Type "normal" or "uniform" to switch mode
+                runOps(uniSkipList, "normal");
             }
         }
     }
