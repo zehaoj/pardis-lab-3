@@ -201,78 +201,9 @@ public class Task3_1 {
         }
         checkLogs(uniLinkedList, completeLog);
 
-//        // Create normal distribution skip list.
-//        LockedLFSkipList skipListNormal = new LockedLFSkipList();
-//        Task1.populateLockedList(skipListNormal, "normal");
-//
-//        // Create uniform distribution skip list.
-//        LockedLFSkipList skipListUniform = new LockedLFSkipList();
-//        Task1.populateLockedList(skipListUniform, "uniform");
-//
-//        System.out.println();
-//        // Mixed operation test.
-////        System.out.println("Starting comparison test.\n");
-////        comparisonTest(skipListUniform, skipListNormal);
-//
-//        System.out.println("\nStarting consistency test.\n");
-//        LinkedList<Integer> uniformList = skipListUniform.toList();
-//        LinkedList<Integer> normalList = skipListNormal.toList();
-//        threadNum = 1;
-//        fracAdd = 0.5;
-//        fracRemove = 0.5;
-//        List<ConcurrentLinkedQueue<Log>> logListUniform = runOpsWithLogs(skipListUniform, "uniform", 1);
-//        List<ConcurrentLinkedQueue<Log>> logListNormal = runOpsWithLogs(skipListNormal, "normal", 1);
-//        TreeMap<Long, Log> completeUniformLog = new TreeMap<Long, Log>();
-//        TreeMap<Long, Log> completeNormalLog = new TreeMap<Long, Log>();
-//        for(ConcurrentLinkedQueue<Log> log : logListUniform) {
-//            for (Log oneLog : log) {
-//                completeUniformLog.put(oneLog.timeStamp, oneLog);
-//            }
-//        }
-//        for(ConcurrentLinkedQueue<Log> log : logListNormal) {
-//            for (Log oneLog : log) {
-//                completeNormalLog.put(oneLog.timeStamp, oneLog);
-//            }
-//        }
-//        checkLogs(uniformList, completeUniformLog);
-//        checkLogs(normalList, completeNormalLog);
-//
-//        System.out.println("Finished testing.");
-
     }
 
-//    private static List<LogWrapper> testOps(LockedLFSkipList skipList, String mode, int nTests) {
-//        exec = Executors.newFixedThreadPool(nThreads);
-//        long totalTime = 0;
-//        List<LogWrapper> logList = new ArrayList<>();
-//        for(int i = 0; i < nTests; i++) {
-//            List<Callable<Void>> tasks = new ArrayList<>();
-//            for (int j = 0; j < nThreads; j++) {
-//                TreeMap<Long, Log> log = new TreeMap<Long, Log>();
-//                LogWrapper logWrapper = new LogWrapper(log);
-//                logList.add(logWrapper);
-//                OpsTask1 task = new OpsTask1(skipList, (int) nOps/nThreads, fracAdd, fracRemove, 1 - fracAdd - fracRemove,
-//                        INT_MIN, INT_MAX, INT_MEAN, INT_STD, mode, logWrapper, true);
-//                tasks.add(task);
-//            }
-//            try {
-//                long t1 = System.nanoTime();
-//                exec.invokeAll(tasks);
-//                long t2 = System.nanoTime();
-//                totalTime += (t2 - t1);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        exec.shutdown();
-//        try {
-//            exec.awaitTermination(3, TimeUnit.SECONDS);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        System.out.println(mode + "|add " + fracAdd + "|remove " + fracRemove + "|contains " + 0 + "|threads " + nThreads + "|avTime " + totalTime/(1e9*nTests) + "s");
-//        return logList;
-//    }
+
 
 
 }

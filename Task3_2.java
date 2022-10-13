@@ -23,7 +23,7 @@ public class Task3_2 {
     public static  int INT_MAX = (int) 1e5;
     public static  int INT_MEAN = (int) 5e4;
     public static final int INT_VAR = (int) 5e4 / 3;
-    public static final int OPS_NUM = (int) 1e6;
+    public static final int OPS_NUM = (int) 1e5;
 
     public static int threadNum;
     public static ExecutorService exec;
@@ -87,7 +87,7 @@ public class Task3_2 {
                 } else {
                     pop = new NormalPopulation(123, INT_MIN, INT_MAX, INT_MEAN, INT_VAR);
                 }
-                Task3_1.OpsTask task = new Task3_1.OpsTask((int) OPS_NUM / threadNum, skipList, pop);
+                Task3_2.OpsTask task = new Task3_2.OpsTask((int) OPS_NUM / threadNum, skipList, pop);
                 tasks.add(task);
             }
         }
@@ -122,7 +122,7 @@ public class Task3_2 {
                 } else {
                     pop = new NormalPopulation(123, INT_MIN, INT_MAX, INT_MEAN, INT_VAR);
                 }
-                Task3_1.OpsTask task = new Task3_1.OpsTask((int) OPS_NUM / threadNum, skipList, pop, log);
+                Task3_2.OpsTask task = new Task3_2.OpsTask((int) OPS_NUM / threadNum, skipList, pop, log);
                 tasks.add(task);
             }
         }
@@ -177,8 +177,8 @@ public class Task3_2 {
 
 
     public static void main(String [] args) {
-//        LockedLFSkipList uniSkipList = new LockedLFSkipList(false);
-//        Task1.populateLockedList(uniSkipList, "uniform");
+        LockedLFSkipList uniSkipList = new LockedLFSkipList(false);
+        Task1.populateLockedList(uniSkipList, "uniform");
 //
 //        // Test the running time of the locked skiplist
 ////        for (int n = 0; n < threadNumList.length; n++) {
@@ -193,88 +193,23 @@ public class Task3_2 {
 ////            }
 ////        }
 //
-//        // Test if the skiplist meets sequential specification
-//        LinkedList<Integer> uniLinkedList = uniSkipList.toList();
-//        threadNum = 48;
-//        System.out.println("thread: " + threadNum);
-//        fracAdd = 0.4;
-//        fracRemove = 0.4;
-//        System.out.println("add frac: " + fracAdd);
-//        System.out.println("remove frac: " + fracRemove);
-//        List<ConcurrentLinkedQueue<Log>> logList = runOpsWithLogs(uniSkipList, "uniform", 1);
-//        TreeMap<Long, Log> completeLog = new TreeMap<>();
-//        for (ConcurrentLinkedQueue<Log> log : logList) {
-//            for (Log oneLog : log) {
-//                completeLog.put(oneLog.timeStamp, oneLog);
-//            }
-//        }
-//        checkLogs(uniLinkedList, completeLog);
-
-        // Create normal distribution skip list.
-        LockedLFSkipList skipListNormal = new LockedLFSkipList(false);
-        Task1.populateLockedList(skipListNormal, "normal");
-
-        // Create uniform distribution skip list.
-        LockedLFSkipList skipListUniform = new LockedLFSkipList(false);
-        Task1.populateLockedList(skipListUniform, "uniform");
-
-        // Mixed operation test.
-        System.out.println("\nStarting consistency test.\n");
-        consistencyTest(skipListUniform, skipListNormal);
-        INT_MAX = (int) 1e6; INT_MEAN = (int) 5e5; INT_STD = (int) 5e5 / 3;
-        consistencyTest(skipListUniform, skipListNormal);
-        INT_MAX = (int) 1e5; INT_MEAN = (int) 5e4; INT_STD = (int) 5e4 / 3;
-        consistencyTest(skipListUniform, skipListNormal);
-        System.out.println("Finished testing.");
-
-    }
-
-    private static void consistencyTest(LockedLFSkipList skipListUniform, LockedLFSkipList skipListNormal) {
-        LinkedList<Integer> uniformList = skipListUniform.toList();
-        LinkedList<Integer> normalList = skipListNormal.toList();
-        List<LogWrapper> logListUniform = testOps(skipListUniform, "uniform", 1);
-        List<LogWrapper> logListNormal = testOps(skipListNormal, "normal", 1);
-        TreeMap<Long, Log> completeUniformLog = new TreeMap<Long, Log>();
-        TreeMap<Long, Log> completeNormalLog = new TreeMap<Long, Log>();
-        for(LogWrapper log : logListUniform) {
-            completeUniformLog.putAll(log.toTreeMap());
-        }
-        for(LogWrapper log : logListNormal) {
-            completeNormalLog.putAll(log.toTreeMap());
-        }
-        int errCnt;
-        errCnt = LogChecker.checkLogs(uniformList, completeUniformLog);
-        System.out.println("Local log uniform error count: " + errCnt);
-        errCnt = LogChecker.checkLogs(normalList, completeNormalLog);
-        System.out.println("Local log normal error count: " + errCnt);
-    }
-
-    private static List<LogWrapper> testOps(LockedLFSkipList skipList, String mode, int nTests) {
-        exec = Executors.newFixedThreadPool(nThreads);
-        List<LogWrapper> logList = new ArrayList<>();
-        for(int i = 0; i < nTests; i++) {
-            List<Callable<Void>> tasks = new ArrayList<>();
-            for (int j = 0; j < nThreads; j++) {
-                TreeMap<Long, Log> log = new TreeMap<Long, Log>();
-                LogWrapper logWrapper = new LogWrapper(log);
-                logList.add(logWrapper);
-                OpsTask1 task = new OpsTask1(skipList, (int) nOps/nThreads, fracAdd, fracRemove, fracContains,
-                        INT_MIN, INT_MAX, INT_MEAN, INT_STD, mode, logWrapper, true);
-                tasks.add(task);
-            }
-            try {
-                exec.invokeAll(tasks);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        // Test if the skiplist meets sequential specification
+        LinkedList<Integer> uniLinkedList = uniSkipList.toList();
+        threadNum = 4;
+        System.out.println("thread: " + threadNum);
+        fracAdd = 0.1;
+        fracRemove = 0.1;
+        System.out.println("add frac: " + fracAdd);
+        System.out.println("remove frac: " + fracRemove);
+        List<ConcurrentLinkedQueue<Log>> logList = runOpsWithLogs(uniSkipList, "uniform", 1);
+        TreeMap<Long, Log> completeLog = new TreeMap<>();
+        for (ConcurrentLinkedQueue<Log> log : logList) {
+            for (Log oneLog : log) {
+                completeLog.put(oneLog.timeStamp, oneLog);
             }
         }
-        exec.shutdown();
-        try {
-            exec.awaitTermination(3, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return logList;
+        checkLogs(uniLinkedList, completeLog);
+
     }
 
 
