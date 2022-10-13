@@ -168,7 +168,7 @@ public class Task3_1 {
 
 
     public static void main(String [] args) {
-        LockedLFSkipList uniSkipList = new LockedLFSkipList(true);
+        LockedLFSkipList uniSkipList = new LockedLFSkipList(false);
         Task1.populateLockedList(uniSkipList, "uniform");
 
         // Test the running time of the locked skiplist
@@ -183,6 +183,9 @@ public class Task3_1 {
 //                runOps(uniSkipList, "uniform", 5);
 //            }
 //        }
+
+        //Test 3.2
+
 
         // Test if the skiplist meets sequential specification
         LinkedList<Integer> uniLinkedList = uniSkipList.toList();
