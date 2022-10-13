@@ -14,7 +14,7 @@ public class Task3_1 {
     public static final int INT_MAX = (int) 1e7;
     public static final int INT_MEAN = (int) 5e6;
     public static final int INT_VAR = (int) 5e6 / 3;
-    public static final int OPS_NUM = (int) 1e6;
+    public static final int OPS_NUM = (int) 5e6;
 
     public static int threadNum;
     public static ExecutorService exec;
@@ -156,7 +156,7 @@ public class Task3_1 {
                 }
                 if (!(result == realLog.success)) {
                     wrongOps ++;
-                    System.out.println(num + ": " + realLog.op + " " + realLog.num + " " + realLog.timeStamp + " " + realLog.success);
+//                    System.out.println(num + ": " + realLog.op + " " + realLog.num + " " + realLog.timeStamp + " " + realLog.success);
                 }
             }
         }
@@ -189,19 +189,22 @@ public class Task3_1 {
 
         // Test if the skiplist meets sequential specification
         LinkedList<Integer> uniLinkedList = uniSkipList.toList();
-        threadNum = 4;
+        threadNum = 7;
         System.out.println("thread: " + threadNum);
         fracAdd = 0.5;
         fracRemove = 0.5;
         System.out.println("add frac: " + fracAdd);
         System.out.println("remove frac: " + fracRemove);
         List<ConcurrentLinkedQueue<Log>> logList = runOpsWithLogs(uniSkipList, "uniform", 1);
+        long t1 = System.nanoTime();
         TreeMap<Long, Log> completeLog = new TreeMap<>();
         for (ConcurrentLinkedQueue<Log> log : logList) {
             for (Log oneLog : log) {
                 completeLog.put(oneLog.timeStamp, oneLog);
             }
         }
+        long t2 = System.nanoTime();
+        System.out.println((t2 - t1) / 1e9);
         checkLogs(uniLinkedList, completeLog);
 
     }
