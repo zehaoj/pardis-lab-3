@@ -78,7 +78,7 @@ public class Task3_3 {
                 } else {
                     pop = new NormalPopulation(123, INT_MIN, INT_MAX, INT_MEAN, INT_VAR);
                 }
-                Task3_1.OpsTask task = new Task3_1.OpsTask((int) OPS_NUM / threadNum, skipList, pop);
+                Task3_3.OpsTask task = new Task3_3.OpsTask((int) OPS_NUM / threadNum, skipList, pop);
                 tasks.add(task);
             }
         }
