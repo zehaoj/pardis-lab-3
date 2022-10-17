@@ -166,7 +166,7 @@ public final class LockedLFSkipList<T> {
                         /*size.getAndDecrement();*/
                         return new Log("rmv", x.hashCode(), true, lintime);
                     } else if (marked[0]) {
-                        return new Log("rmv", x.hashCode(), false, 0);
+                        return new Log("rmv", x.hashCode(), false, lintime);
                     }
                 }
             }
