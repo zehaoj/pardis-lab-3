@@ -173,17 +173,17 @@ public class Task3_1_2 {
         Task1.populateLockedList(uniSkipList, "uniform");
 
         // Test the running time of the locked skiplist
-//        for (int n = 0; n < threadNumList.length; n++) {
-//            threadNum = threadNumList[n];
-//            System.out.println("thread: " + threadNum);
-//            for (int i = 0; i < fracAddRange.length; i++) {
-//                fracAdd = fracAddRange[i];
-//                fracRemove = fracRemoveRange[i];
-//                System.out.println("add frac: " + fracAdd);
-//                System.out.println("remove frac: " + fracRemove);
-//                runOps(uniSkipList, "uniform", 10);
-//            }
-//        }
+        for (int n = 0; n < threadNumList.length; n++) {
+            threadNum = threadNumList[n];
+            System.out.println("thread: " + threadNum);
+            for (int i = 0; i < fracAddRange.length; i++) {
+                fracAdd = fracAddRange[i];
+                fracRemove = fracRemoveRange[i];
+                System.out.println("add frac: " + fracAdd);
+                System.out.println("remove frac: " + fracRemove);
+                runOps(uniSkipList, "uniform", 10);
+            }
+        }
 
         // Test if the skiplist meets sequential specification
         LinkedList<Integer> uniLinkedList = uniSkipList.toList();
