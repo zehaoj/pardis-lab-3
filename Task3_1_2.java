@@ -210,10 +210,17 @@ public class Task3_1_2 {
         Collections.sort(completeLog, (o1, o2) -> o1.compareTo(o2.timeStamp));
         // If there are any failed removal logs, find the corresponding succeeded log and insert the log after it.
         for (Log log : failedRmvLog) {
+            boolean found = false;
             for (int i = completeLog.size() - 1; i >= 0; i--) {
                 long timeStamp = completeLog.get(i).timeStamp;
-                if (timeStamp < log.timeStamp && timeStamp > log.timeBefore)
+                if (timeStamp < log.timeStamp && timeStamp > log.timeBefore) {
                     completeLog.add(i + 1, log);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                System.out.println("found one wrong operation");
             }
         }
         long t2 = System.nanoTime();
@@ -250,10 +257,17 @@ public class Task3_1_2 {
             Collections.sort(completeLog, (o1, o2) -> o1.compareTo(o2.timeStamp));
             // If there are any failed removal logs, find the corresponding succeeded log and insert the log after it.
             for (Log log : failedRmvLog) {
+                boolean found = false;
                 for (int i = completeLog.size() - 1; i >= 0; i--) {
                     long timeStamp = completeLog.get(i).timeStamp;
-                    if (timeStamp < log.timeStamp && timeStamp > log.timeBefore)
+                    if (timeStamp < log.timeStamp && timeStamp > log.timeBefore) {
                         completeLog.add(i + 1, log);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    System.out.println("found one wrong operation");
                 }
             }
             t2 = System.nanoTime();
