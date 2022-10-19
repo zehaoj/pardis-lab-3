@@ -138,13 +138,13 @@ public class Task3_1_2 {
         return logList;
     }
 
-    private static void checkLogs (LinkedList<Integer> originalList, TreeMap<Long, Log> log) {
+    private static void checkLogs (LinkedList<Integer> originalList, List<Log> log) {
         int num = 0;
         int wrongOps = 0;
         Set<Integer> originalSet = new HashSet<>(originalList);
-        for(Map.Entry<Long, Log> onelog : log.entrySet()) {
+        for(Log onelog : log) {
             num ++;
-            Log realLog = onelog.getValue();
+            Log realLog = onelog;
             boolean result = true;
             if (realLog.timeStamp != 0) {
                 if (realLog.op.equals("add")) {
@@ -173,17 +173,17 @@ public class Task3_1_2 {
         Task1.populateLockedList(uniSkipList, "uniform");
 
         // Test the running time of the locked skiplist
-        for (int n = 0; n < threadNumList.length; n++) {
-            threadNum = threadNumList[n];
-            System.out.println("thread: " + threadNum);
-            for (int i = 0; i < fracAddRange.length; i++) {
-                fracAdd = fracAddRange[i];
-                fracRemove = fracRemoveRange[i];
-                System.out.println("add frac: " + fracAdd);
-                System.out.println("remove frac: " + fracRemove);
-                runOps(uniSkipList, "uniform", 10);
-            }
-        }
+//        for (int n = 0; n < threadNumList.length; n++) {
+//            threadNum = threadNumList[n];
+//            System.out.println("thread: " + threadNum);
+//            for (int i = 0; i < fracAddRange.length; i++) {
+//                fracAdd = fracAddRange[i];
+//                fracRemove = fracRemoveRange[i];
+//                System.out.println("add frac: " + fracAdd);
+//                System.out.println("remove frac: " + fracRemove);
+//                runOps(uniSkipList, "uniform", 10);
+//            }
+//        }
 
         // Test if the skiplist meets sequential specification
         LinkedList<Integer> uniLinkedList = uniSkipList.toList();
@@ -194,14 +194,30 @@ public class Task3_1_2 {
         System.out.println("add frac: " + fracAdd);
         System.out.println("remove frac: " + fracRemove);
         List<ConcurrentLinkedQueue<Log>> logList = runOpsWithLogs(uniSkipList, "uniform", 1);
+
         long t1 = System.nanoTime();
-        TreeMap<Long, Log> completeLog = new TreeMap<>();
+        // Sort logs based on their timestamps
+        ArrayList<Log> completeLog = new ArrayList<>();
+        ArrayList<Log> failedRmvLog = new ArrayList<>();
         for (ConcurrentLinkedQueue<Log> log : logList) {
             for (Log oneLog : log) {
-                completeLog.put(oneLog.timeStamp, oneLog);
+                if (oneLog.timeBefore == 0)
+                    completeLog.add(oneLog);
+                else
+                    failedRmvLog.add(oneLog);
+            }
+        }
+        Collections.sort(completeLog, (o1, o2) -> o1.compareTo(o2.timeStamp));
+        // If there are any failed removal logs, find the corresponding succeeded log and insert the log after it.
+        for (Log log : failedRmvLog) {
+            for (int i = completeLog.size() - 1; i >= 0; i--) {
+                long timeStamp = completeLog.get(i).timeStamp;
+                if (timeStamp < log.timeStamp && timeStamp > log.timeBefore)
+                    completeLog.add(i + 1, log);
             }
         }
         long t2 = System.nanoTime();
+
         System.out.println("time spent for aggregating logs: " + (t2 - t1) / 1e9 + "s");
         checkLogs(uniLinkedList, completeLog);
 
@@ -220,10 +236,24 @@ public class Task3_1_2 {
             System.out.println("remove frac: " + fracRemove);
             logList = runOpsWithLogs(uniSkipList, "uniform", 1);
             t1 = System.nanoTime();
-            completeLog = new TreeMap<>();
+            // Sort logs based on their timestamps
+            completeLog = new ArrayList<>();
+            failedRmvLog = new ArrayList<>();
             for (ConcurrentLinkedQueue<Log> log : logList) {
                 for (Log oneLog : log) {
-                    completeLog.put(oneLog.timeStamp, oneLog);
+                    if (oneLog.timeBefore == 0)
+                        completeLog.add(oneLog);
+                    else
+                        failedRmvLog.add(oneLog);
+                }
+            }
+            Collections.sort(completeLog, (o1, o2) -> o1.compareTo(o2.timeStamp));
+            // If there are any failed removal logs, find the corresponding succeeded log and insert the log after it.
+            for (Log log : failedRmvLog) {
+                for (int i = completeLog.size() - 1; i >= 0; i--) {
+                    long timeStamp = completeLog.get(i).timeStamp;
+                    if (timeStamp < log.timeStamp && timeStamp > log.timeBefore)
+                        completeLog.add(i + 1, log);
                 }
             }
             t2 = System.nanoTime();

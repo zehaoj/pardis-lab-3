@@ -258,7 +258,16 @@ public class Task3_3 {
                 if (oneLog == null) {
                     continue;
                 }
-                completeLog.put(oneLog.timeStamp, oneLog);
+                if (oneLog.timeBefore == 0) {
+                    completeLog.put(oneLog.timeStamp, oneLog);
+                } else { // Insert the failed removal log
+                    for (Long timeStamp : completeLog.descendingKeySet()) {
+                        if (timeStamp < oneLog.timeStamp && timeStamp > oneLog.timeBefore) {
+                            if (!completeLog.containsKey(timeStamp + 1))
+                                completeLog.put(timeStamp + 1, oneLog);
+                        }
+                    }
+                }
                 size --;
             }
         }

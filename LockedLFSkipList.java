@@ -91,7 +91,7 @@ public final class LockedLFSkipList<T> {
             Boolean found = timeStampedBool.find;
             lintime = timeStampedBool.linTime;
             if (found) {
-                return new Log("add", x.hashCode(), false, lintime);
+                return new Log("add", x.hashCode(), false, lintime, 0);
             } else {
                 Node<T> newNode = new Node(x, topLevel);
                 for (int level = bottomLevel; level <= topLevel; level++) {
@@ -121,7 +121,7 @@ public final class LockedLFSkipList<T> {
                         find(x, preds, succs);
                     }
                 }
-                return new Log("add", x.hashCode(), true, lintime);
+                return new Log("add", x.hashCode(), true, lintime, 0);
             }
         }
     }
@@ -129,6 +129,7 @@ public final class LockedLFSkipList<T> {
     @SuppressWarnings("unchecked")
     public Log remove(T x) {
         long lintime = 0;
+        long timeBefore = 0;
         int bottomLevel = 0;
         Node<T>[] preds = (Node<T>[]) new Node[MAX_LEVEL + 1];
         Node<T>[] succs = (Node<T>[]) new Node[MAX_LEVEL + 1];
@@ -137,8 +138,9 @@ public final class LockedLFSkipList<T> {
             TimeStampedBool timeStampedBool = find(x, preds, succs);
             boolean found = timeStampedBool.find;
             lintime = timeStampedBool.linTime;
+            timeBefore = lintime;
             if (!found) {
-                return new Log("rmv", x.hashCode(), false, lintime);
+                return new Log("rmv", x.hashCode(), false, lintime, 0);
             } else {
                 Node<T> nodeToRemove = succs[bottomLevel];
                 for (int level = nodeToRemove.topLevel; level >= bottomLevel+1; level --) {
@@ -155,7 +157,8 @@ public final class LockedLFSkipList<T> {
 
                     if (addLock)
                         linearizationLock.lock();
-                    boolean iMarkedIt = nodeToRemove.next[bottomLevel].compareAndSet(succ, succ, false, true); // Linearization point when succeeded.
+                    // Linearization point when succeeded.
+                    boolean iMarkedIt = nodeToRemove.next[bottomLevel].compareAndSet(succ, succ, false, true);
                     lintime = System.nanoTime();
                     if (addLock)
                         linearizationLock.unlock();
@@ -164,9 +167,9 @@ public final class LockedLFSkipList<T> {
                     if (iMarkedIt) {
                         find(x, preds, succs);
                         /*size.getAndDecrement();*/
-                        return new Log("rmv", x.hashCode(), true, lintime);
+                        return new Log("rmv", x.hashCode(), true, lintime, 0);
                     } else if (marked[0]) {
-                        return new Log("rmv", x.hashCode(), false, lintime);
+                        return new Log("rmv", x.hashCode(), false, lintime, timeBefore);
                     }
                 }
             }
@@ -264,7 +267,7 @@ public final class LockedLFSkipList<T> {
                 }
             }
         }
-        return new Log("contains", v, (curr.key == v), lintime);
+        return new Log("contains", v, (curr.key == v), lintime, 0);
         // Different objects may have the same hash.
         // return (curr.key == key) && x.equals(curr.value);
     }
